@@ -1,11 +1,12 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import {ArrowLeft} from 'lucide-react';
-import { useEffect, useState } from "react";
+import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState, Suspense } from "react";
 import { ChevronDown, ChevronUp, SortDesc } from 'lucide-react';
 
-export default function ResultsPage() {
+// Component that uses useSearchParams
+function ResultsContent() {
   const searchParams = useSearchParams();
   const rank = searchParams.get("rank");
   const domicile = searchParams.get("domicile");
@@ -187,5 +188,26 @@ export default function ResultsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function ResultsLoadingFallback() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-lg font-medium text-gray-700">Loading results...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={<ResultsLoadingFallback />}>
+      <ResultsContent />
+    </Suspense>
   );
 }
